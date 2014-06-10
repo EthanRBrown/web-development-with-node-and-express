@@ -4,3 +4,6 @@ node_modules
 # put any other files you don't want to check in here,
 # such as .DS_Store (OSX), *.bak, etc.
 .DS_Store
+
+# we don't want to accidentally check our secret credentials into the repo
+credentials.js
