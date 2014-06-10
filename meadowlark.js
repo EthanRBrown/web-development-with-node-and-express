@@ -25,6 +25,18 @@ app.set('view engine', 'handlebars');
 
 app.set('port', process.env.PORT || 3000);
 
+// logging
+switch(app.get('env')){
+    case 'development':
+    	// compact, colorful dev logging
+    	app.use(require('morgan')('dev'));
+        break;
+    case 'production':
+        // module 'express-logger' supports daily log rotation
+        app.use(require('express-logger')({ path: __dirname + '/log/requests.log'}));
+        break;
+}
+
 app.use(require('cookie-parser')(credentials.cookieSecret));
 app.use(require('express-session')());
 app.use(express.static(__dirname + '/public'));

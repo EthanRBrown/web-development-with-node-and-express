@@ -7,3 +7,6 @@ node_modules
 
 # we don't want to accidentally check our secret credentials into the repo
 credentials.js
+
+# don't commit log files
+log

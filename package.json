@@ -24,7 +24,9 @@
     "express": "~4.4.2",
     "express-session": "^1.2.1",
     "express3-handlebars": "~0.5.0",
-    "nodemailer": "~0.6.5"
+    "nodemailer": "~0.6.5",
+    "express-logger": "0.0.3",
+    "morgan": "~1.1.1"
   },
   "devDependencies": {
     "grunt": "^0.4.5",
