@@ -6,6 +6,8 @@ var app = express();
 
 var credentials = require('./credentials.js');
 
+var emailService = require('./lib/email.js')(credentials);
+
 // set up handlebars view engine
 var handlebars = require('express3-handlebars').create({
     defaultLayout:'main',
@@ -77,16 +79,6 @@ app.use(function(req, res, next){
 	if(!res.locals.partials) res.locals.partials = {};
  	res.locals.partials.weather = getWeatherData();
  	next();
-});
-
-// mail support
-var nodemailer = require('nodemailer');
-var mailTransport = nodemailer.createTransport('SMTP',{
-	service: 'Gmail',
-	auth: {
-		user: credentials.gmail.user,
-		pass: credentials.gmail.password,
-	}
 });
 
 app.get('/', function(req, res) {
@@ -310,16 +302,9 @@ app.post('/cart/checkout', function(req, res){
     res.render('email/cart-thank-you', 
     	{ layout: null, cart: cart }, function(err,html){
 	        if( err ) console.log('error in email template');
-	        mailTransport.sendMail({
-	            from: '"Meadowlark Travel": info@meadowlarktravel.com',
-	            to: cart.billing.email,
-	            subject: 'Thank You for Book your Trip with Meadowlark Travel',
-	            html: html,
-	            generateTextFromHtml: true
-	        }, function(err){
-	        	if(err) console.error('Unable to send confirmation email: ' 
-	        		+ err.stack);
-	        });
+	        emailService.send(cart.billing.email,
+	        	'Thank you for booking your trip with Meadowlark Travel!',
+	        	html);
 	    }
     );
     res.render('cart-thank-you', { cart: cart });
