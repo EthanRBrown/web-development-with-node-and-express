@@ -1,6 +1,7 @@
 var express = require('express'),
 	fortune = require('./lib/fortune.js'),
-	formidable = require('formidable');
+	formidable = require('formidable'),
+	jqupload = require('jquery-file-upload-middleware');
 
 var app = express();
 
@@ -64,6 +65,19 @@ app.use(function(req, res, next){
 	if(!res.locals.partials) res.locals.partials = {};
  	res.locals.partials.weather = getWeatherData();
  	next();
+});
+
+// jQuery File Upload endpoint middleware
+app.use('/upload', function(req, res, next){
+    var now = Date.now();
+    jqupload.fileHandler({
+        uploadDir: function(){
+            return __dirname + '/public/uploads/' + now;
+        },
+        uploadUrl: function(){
+            return '/uploads/' + now;
+        },
+    })(req, res, next);
 });
 
 app.get('/', function(req, res) {
