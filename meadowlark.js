@@ -79,6 +79,16 @@ app.use(function(req, res, next){
  	next();
 });
 
+// mail support
+var nodemailer = require('nodemailer');
+var mailTransport = nodemailer.createTransport('SMTP',{
+	service: 'Gmail',
+	auth: {
+		user: credentials.gmail.user,
+		pass: credentials.gmail.password,
+	}
+});
+
 app.get('/', function(req, res) {
 	res.render('home');
 });
