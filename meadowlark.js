@@ -291,7 +291,18 @@ app.get('/cart/checkout', function(req, res, next){
 app.post('/cart/checkout', function(req, res){
 	var cart = req.session.cart;
 	if(!cart) next();
-	// TODO: send confirmation email
+	var email = req.body.email || '';
+	// input validation
+	if(!email.match(VALID_EMAIL_REGEX)) return res.next(new Error('Invalid email address.'));
+	mailTransport.sendMail({
+		from: '"Meadowlark Travel" <info@meadowlarktravel.com>',
+		to: email,
+		subject: 'Your Meadowlark Travel Tour',
+		text: 'Thank you for booking your trip with Meadowlark Travel.  ' +
+			'We look forward to your visit!',
+	}, function(err){
+		if(err) console.error( 'Unable to send email: ' + error );
+	});	
 	res.redirect(303, '/');
 });
 
