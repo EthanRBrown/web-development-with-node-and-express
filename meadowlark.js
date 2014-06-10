@@ -268,19 +268,20 @@ app.use(cartValidation.checkWaivers);
 app.use(cartValidation.checkGuestCounts);
 
 app.post('/cart/add', function(req, res, next){
-	var cart = req.session.cart || (req.session.cart = []);
+	var cart = req.session.cart || (req.session.cart = { items: [] });
 	Product.findOne({ sku: req.body.sku }, function(err, product){
 		if(err) return next(err);
 		if(!product) return next(new Error('Unknown product SKU: ' + req.body.sku));
-		cart.push({
+		cart.items.push({
 			product: product,
 			guests: req.body.guests || 0,
 		})
 		res.redirect(303, '/cart');
 	});
 });
-app.get('/cart', function(req, res){
-	var cart = req.session.cart || (req.session.cart = []);
+app.get('/cart', function(req, res, next){
+	var cart = req.session.cart;
+	if(!cart) next();
 	res.render('cart', { cart: cart });
 });
 app.get('/cart/checkout', function(req, res, next){
@@ -288,23 +289,40 @@ app.get('/cart/checkout', function(req, res, next){
 	if(!cart) next();
 	res.render('cart-checkout');
 });
+app.get('/cart/thank-you', function(req, res){
+	res.render('cart-thank-you', { cart: req.session.cart });
+});
+app.get('/email/cart/thank-you', function(req, res){
+	res.render('email/cart-thank-you', { cart: req.session.cart, layout: null });
+});
 app.post('/cart/checkout', function(req, res){
 	var cart = req.session.cart;
-	if(!cart) next();
-	var email = req.body.email || '';
+	if(!cart) next(new Error('Cart does not exist.'));
+	var name = req.body.name || '', email = req.body.email || '';
 	// input validation
 	if(!email.match(VALID_EMAIL_REGEX)) return res.next(new Error('Invalid email address.'));
-	mailTransport.sendMail({
-		from: '"Meadowlark Travel" <info@meadowlarktravel.com>',
-		to: email,
-		subject: 'Your Meadowlark Travel Tour',
-		html: '<h1>Meadowlark Travel</h1>\n<p>Thanks for book your trip with ' +
-			'Meadowlark Travel.  <b>We look forward to your visit!</b>',
-		generateTextFromHtml: true,
-	}, function(err){
-		if(err) console.error( 'Unable to send email: ' + error );
-	});	
-	res.redirect(303, '/');
+	// assign a random cart ID; normally we would use a database ID here
+	cart.number = Math.random().toString().replace(/^0\.0*/, '');
+	cart.billing = {
+		name: name,
+		email: email,
+	}
+    res.render('email/cart-thank-you', 
+    	{ layout: null, cart: cart }, function(err,html){
+	        if( err ) console.log('error in email template');
+	        mailTransport.sendMail({
+	            from: '"Meadowlark Travel": info@meadowlarktravel.com',
+	            to: cart.billing.email,
+	            subject: 'Thank You for Book your Trip with Meadowlark Travel',
+	            html: html,
+	            generateTextFromHtml: true
+	        }, function(err){
+	        	if(err) console.error('Unable to send confirmation email: ' 
+	        		+ err.stack);
+	        });
+	    }
+    );
+    res.render('cart-thank-you', { cart: cart });
 });
 
 // 404 catch-all handler (middleware)
