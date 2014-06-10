@@ -20,6 +20,7 @@ app.set('view engine', 'handlebars');
 app.set('port', process.env.PORT || 3000);
 
 app.use(express.static(__dirname + '/public'));
+app.use(require('body-parser')());
 
 // set 'showTests' context property if the querystring contains test=1
 app.use(function(req, res, next){
@@ -95,6 +96,18 @@ app.get('/data/nursery-rhyme', function(req, res){
 		adjective: 'bushy',
 		noun: 'heck',
 	});
+});
+app.get('/newsletter', function(req, res){
+    // we will learn about CSRF later...for now, we just
+    // provide a dummy value
+    res.render('newsletter', { csrf: 'CSRF token goes here' });
+});
+app.post('/process', function(req, res){
+    console.log('Form (from querystring): ' + req.query.form);
+    console.log('CSRF token (from hidden form field): ' + req.body._csrf);
+    console.log('Name (from visible form field): ' + req.body.name);
+    console.log('Email (from visible form field): ' + req.body.email);
+    res.redirect(303, '/thank-you');
 });
 
 // 404 catch-all handler (middleware)
