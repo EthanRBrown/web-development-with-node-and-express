@@ -1,0 +1,17 @@
+<h1>Your Shopping Cart</h1>
+<table class="table table-striped">
+	<thead>
+		<tr>
+			<td>Vacation</td>
+			<td>Guests</td>
+		</tr>
+	</thead>
+	<tbody>
+		{{#each cart}}
+			<tr>
+				<td>{{product.name}}</td>
+				<td>{{guests}}</td>
+			</tr>
+		{{/each}}
+	</tbody>
+</table>
