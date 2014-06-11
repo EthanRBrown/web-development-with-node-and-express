@@ -30,7 +30,8 @@
     "mongoose": "^3.8.12",
     "morgan": "~1.1.1",
     "nodemailer": "~0.6.5",
-    "session-mongoose": "^0.4.1"
+    "session-mongoose": "^0.4.1",
+    "vhost": "^2.0.0"
   },
   "devDependencies": {
     "grunt": "^0.4.5",
