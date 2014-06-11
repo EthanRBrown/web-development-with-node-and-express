@@ -2,7 +2,8 @@ var http = require('http'),
 	express = require('express'),
 	fortune = require('./lib/fortune.js'),
 	formidable = require('formidable'),
-	fs = require('fs');
+	fs = require('fs'),
+	Vacation = require('./models/vacation.js');
 
 var app = express();
 
@@ -87,6 +88,74 @@ app.use(require('cookie-parser')(credentials.cookieSecret));
 app.use(require('express-session')());
 app.use(express.static(__dirname + '/public'));
 app.use(require('body-parser')());
+
+// database configuration
+var mongoose = require('mongoose');
+var options = {
+    server: {
+       socketOptions: { keepAlive: 1 } 
+    }
+};
+switch(app.get('env')){
+    case 'development':
+        mongoose.connect(credentials.mongo.development.connectionString, options);
+        break;
+    case 'production':
+        mongoose.connect(credentials.mongo.production.connectionString, options);
+        break;
+    default:
+        throw new Error('Unknown execution environment: ' + app.get('env'));
+}
+
+// initialize vacations
+Vacation.find(function(err, vacations){
+    if(vacations.length) return;
+
+    new Vacation({
+        name: 'Hood River Day Trip',
+        slug: 'hood-river-day-trip',
+        category: 'Day Trip',
+        sku: 'HR199',
+        description: 'Spend a day sailing on the Columbia and ' + 
+            'enjoying craft beers in Hood River!',
+        priceInCents: 9995,
+        tags: ['day trip', 'hood river', 'sailing', 'windsurfing', 'breweries'],
+        inSeason: true,
+        maximumGuests: 16,
+        available: true,
+        packagesSold: 0,
+    }).save();
+
+    new Vacation({
+        name: 'Oregon Coast Getaway',
+        slug: 'oregon-coast-getaway',
+        category: 'Weekend Getaway',
+        sku: 'OC39',
+        description: 'Enjoy the ocean air and quaint coastal towns!',
+        priceInCents: 269995,
+        tags: ['weekend getaway', 'oregon coast', 'beachcombing'],
+        inSeason: false,
+        maximumGuests: 8,
+        available: true,
+        packagesSold: 0,
+    }).save();
+
+    new Vacation({
+        name: 'Rock Climbing in Bend',
+        slug: 'rock-climbing-in-bend',
+        category: 'Adventure',
+        sku: 'B99',
+        description: 'Experience the thrill of rock climbing in the high desert.',
+        priceInCents: 289995,
+        tags: ['weekend getaway', 'bend', 'high desert', 'rock climbing', 'hiking', 'skiing'],
+        inSeason: true,
+        requiresWaiver: true,
+        maximumGuests: 4,
+        available: false,
+        packagesSold: 0,
+        notes: 'The tour guide is currently recovering from a skiing accident.',
+    }).save();
+});
 
 // flash message middleware
 app.use(function(req, res, next){
@@ -200,21 +269,21 @@ Product.find = function(conditions, fields, options, cb){
 	var products = [
 		{
 			name: 'Hood River Tour',
-			slug: 'hood-river',
+			slug: 'hood-river-tour',
 			category: 'tour',
 			maximumGuests: 15,
 			sku: 723,
 		},
 		{
 			name: 'Oregon Coast Tour',
-			slug: 'oregon-coast',
+			slug: 'oregon-coast-tour',
 			category: 'tour',
 			maximumGuests: 10,
 			sku: 446,
 		},
 		{
 			name: 'Rock Climbing in Bend',
-			slug: 'rock-climbing/bend',
+			slug: 'rock-climbing-in-bend',
 			category: 'adventure',
 			requiresWaiver: true,
 			maximumGuests: 4,
@@ -290,15 +359,15 @@ app.get('/contest/vacation-photo', function(req, res){
 	res.render('contest/vacation-photo', { year: now.getFullYear(), month: now.getMonth() });
 });
 
-function saveContestEntry(contestName, email, year, month, photoPath){
-    // TODO...this will come later
-}
-
 // make sure data directory exists
 var dataDir = __dirname + '/data';
 var vacationPhotoDir = dataDir + '/vacation-photo';
 fs.existsSync(dataDir) || fs.mkdirSync(dataDir); 
 fs.existsSync(vacationPhotoDir) || fs.mkdirSync(vacationPhotoDir);
+
+function saveContestEntry(contestName, email, year, month, photoPath){
+    // TODO...this will come later
+}
 
 app.post('/contest/vacation-photo/:year/:month', function(req, res){
     var form = new formidable.IncomingForm();
