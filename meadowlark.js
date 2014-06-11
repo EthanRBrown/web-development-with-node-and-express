@@ -218,8 +218,8 @@ app.get('/about', function(req,res){
 		pageTestScript: '/qa/tests-about.js' 
 	} );
 });
-app.get('/tours/request-group-rate', function(req, res){
-	res.render('tours/request-group-rate');
+app.get('/request-group-rate', function(req, res){
+	res.render('request-group-rate');
 });
 app.get('/jquery-test', function(req, res){
 	res.render('jquery-test');
@@ -249,75 +249,8 @@ NewsletterSignup.prototype.save = function(cb){
 	cb();
 };
 
-// mocking product database
-function Product(){
-}
-Product.find = function(conditions, fields, options, cb){
-	if(typeof conditions==='function') {
-		cb = conditions;
-		conditions = {};
-		fields = null;
-		options = {};
-	} else if(typeof fields==='function') {
-		cb = fields;
-		fields = null;
-		options = {};
-	} else if(typeof options==='function') {
-		cb = options;
-		options = {};
-	}
-	var products = [
-		{
-			name: 'Hood River Tour',
-			slug: 'hood-river-tour',
-			category: 'tour',
-			maximumGuests: 15,
-			sku: 723,
-		},
-		{
-			name: 'Oregon Coast Tour',
-			slug: 'oregon-coast-tour',
-			category: 'tour',
-			maximumGuests: 10,
-			sku: 446,
-		},
-		{
-			name: 'Rock Climbing in Bend',
-			slug: 'rock-climbing-in-bend',
-			category: 'adventure',
-			requiresWaiver: true,
-			maximumGuests: 4,
-			sku: 944,
-		}
-	];
-	cb(null, products.filter(function(p) {
-		if(conditions.category && p.category!==conditions.category) return false;
-		if(conditions.slug && p.slug!==conditions.slug) return false;
-		if(isFinite(conditions.sku) && p.sku!==Number(conditions.sku)) return false;
-		return true;
-	}));
-};
-Product.findOne = function(conditions, fields, options, cb){
-	if(typeof conditions==='function') {
-		cb = conditions;
-		conditions = {};
-		fields = null;
-		options = {};
-	} else if(typeof fields==='function') {
-		cb = fields;
-		fields = null;
-		options = {};
-	} else if(typeof options==='function') {
-		cb = options;
-		options = {};
-	}
-	Product.find(conditions, fields, options, function(err, products){
-		cb(err, products && products.length ? products[0] : null);
-	});
-};
 
 var VALID_EMAIL_REGEX = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)+$/;
-
 
 app.post('/newsletter', function(req, res){
 	var name = req.body.name || '', email = req.body.email || '';
@@ -402,18 +335,11 @@ app.get('/contest/vacation-photo/entries', function(req, res){
 	res.render('contest/vacation-photo/entries');
 });
 
-app.get('/tours/:tour', function(req, res, next){
-	Product.findOne({ category: 'tour', slug: req.params.tour }, function(err, tour){
+app.get('/vacation/:vacation', function(req, res, next){
+	Vacation.findOne({ slug: req.params.vacation }, function(err, vacation){
 		if(err) return next(err);
-		if(!tour) return next();
-		res.render('tour', { tour: tour });
-	});
-});
-app.get('/adventures/:subcat/:name', function(req, res, next){
-	Product.findOne({ category: 'adventure', slug: req.params.subcat + '/' + req.params.name  }, function(err, adventure){
-		if(err) return next(err);
-		if(!adventure) return next();
-		res.render('adventure', { adventure: adventure });
+		if(!vacation) return next();
+		res.render('vacation', { vacation: vacation });
 	});
 });
 
@@ -424,11 +350,11 @@ app.use(cartValidation.checkGuestCounts);
 
 app.post('/cart/add', function(req, res, next){
 	var cart = req.session.cart || (req.session.cart = { items: [] });
-	Product.findOne({ sku: req.body.sku }, function(err, product){
+	Vacation.findOne({ sku: req.body.sku }, function(err, vacation){
 		if(err) return next(err);
-		if(!product) return next(new Error('Unknown product SKU: ' + req.body.sku));
+		if(!vacation) return next(new Error('Unknown vacation SKU: ' + req.body.sku));
 		cart.items.push({
-			product: product,
+			vacation: vacation,
 			guests: req.body.guests || 0,
 		});
 		res.redirect(303, '/cart');
