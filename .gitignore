@@ -10,3 +10,6 @@ credentials.js
 
 # don't commit log files
 log
+
+# ignore uploaded data
+data

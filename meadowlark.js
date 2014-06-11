@@ -1,7 +1,8 @@
 var http = require('http'),
 	express = require('express'),
 	fortune = require('./lib/fortune.js'),
-	formidable = require('formidable');
+	formidable = require('formidable'),
+	fs = require('fs');
 
 var app = express();
 
@@ -248,6 +249,7 @@ Product.findOne = function(conditions, fields, options, cb){
 
 var VALID_EMAIL_REGEX = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)+$/;
 
+
 app.post('/newsletter', function(req, res){
 	var name = req.body.name || '', email = req.body.email || '';
 	// input validation
@@ -282,21 +284,55 @@ app.post('/newsletter', function(req, res){
 app.get('/newsletter/archive', function(req, res){
 	res.render('newsletter/archive');
 });
+
 app.get('/contest/vacation-photo', function(req, res){
-    var now = new Date();
-    res.render('contest/vacation-photo', { year: now.getFullYear(), month: now.getMonth() });
+	var now = new Date();
+	res.render('contest/vacation-photo', { year: now.getFullYear(), month: now.getMonth() });
 });
+
+function saveContestEntry(contestName, email, year, month, photoPath){
+    // TODO...this will come later
+}
+
+// make sure data directory exists
+var dataDir = __dirname + '/data';
+var vacationPhotoDir = dataDir + '/vacation-photo';
+fs.existsSync(dataDir) || fs.mkdirSync(dataDir); 
+fs.existsSync(vacationPhotoDir) || fs.mkdirSync(vacationPhotoDir);
+
 app.post('/contest/vacation-photo/:year/:month', function(req, res){
     var form = new formidable.IncomingForm();
     form.parse(req, function(err, fields, files){
         if(err) return res.redirect(303, '/error');
-        console.log('received fields:');
-        console.log(fields);
-        console.log('received files:');
-        console.log(files);
-        res.redirect(303, '/thank-you');
+        if(err) {
+            res.session.flash = {
+                type: 'danger',
+                intro: 'Oops!',
+                message: 'There was an error processing your submission. ' +
+                    'Pelase try again.',
+            };
+            return res.redirect(303, '/contest/vacation-photo');
+        }
+        var photo = files.photo;
+        var dir = vacationPhotoDir + '/' + Date.now();
+        var path = dir + '/' + photo.name;
+        fs.mkdirSync(dir);
+        fs.renameSync(photo.path, dir + '/' + photo.name);
+        saveContestEntry('vacation-photo', fields.email,
+            req.params.year, req.params.month, path);
+        req.session.flash = {
+            type: 'success',
+            intro: 'Good luck!',
+            message: 'You have been entered into the contest.',
+        };
+        return res.redirect(303, '/contest/vacation-photo/entries');
     });
 });
+
+app.get('/contest/vacation-photo/entries', function(req, res){
+	res.render('contest/vacation-photo/entries');
+});
+
 app.get('/tours/:tour', function(req, res, next){
 	Product.findOne({ category: 'tour', slug: req.params.tour }, function(err, tour){
 		if(err) return next(err);
