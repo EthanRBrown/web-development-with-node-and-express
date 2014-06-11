@@ -19,6 +19,7 @@
   "dependencies": {
     "body-parser": "~1.3.0",
     "chai": "~1.9.1",
+    "connect": "^2.19.5",
     "cookie-parser": "^1.1.0",
     "express": "~4.4.2",
     "express-logger": "0.0.3",
@@ -28,7 +29,8 @@
     "loadtest": "~0.2.11",
     "mongoose": "^3.8.12",
     "morgan": "~1.1.1",
-    "nodemailer": "~0.6.5"
+    "nodemailer": "~0.6.5",
+    "session-mongoose": "^0.4.1"
   },
   "devDependencies": {
     "grunt": "^0.4.5",
