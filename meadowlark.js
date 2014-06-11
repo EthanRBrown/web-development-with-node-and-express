@@ -3,7 +3,8 @@ var http = require('http'),
 	fortune = require('./lib/fortune.js'),
 	formidable = require('formidable'),
 	fs = require('fs'),
-	Vacation = require('./models/vacation.js');
+	Vacation = require('./models/vacation.js'),
+	VacationInSeasonListener = require('./models/vacationInSeasonListener.js');
 
 var app = express();
 
@@ -343,11 +344,62 @@ app.get('/vacation/:vacation', function(req, res, next){
 	});
 });
 
+app.get('/vacations', function(req, res){
+    Vacation.find({ available: true }, function(err, vacations){
+        var context = {
+            vacations: vacations.map(function(vacation){
+                return {
+                    sku: vacation.sku,
+                    name: vacation.name,
+                    description: vacation.description,
+                    price: vacation.getDisplayPrice(),
+                    inSeason: vacation.inSeason,
+                }
+            })
+        };
+        res.render('vacations', context);
+    });
+});
+
+app.post('/vacations', function(req, res){
+    Vacation.findOne({ sku: req.body.purchaseSku }, function(err, vacation){
+        if(err || !vacation) {
+            req.session.flash = {
+                type: 'warning',
+                intro: 'Ooops!',
+                message: 'Something went wrong with your reservation; ' +
+                    'please <a href="/contact">contact us</a>.',
+            };
+            return res.redirect(303, '/vacations');
+        }
+        vacation.packagesSold++;
+        vacation.save();
+        req.session.flash = {
+            type: 'success',
+            intro: 'Thank you!',
+            message: 'Your vacation has been booked.',
+        };
+        res.redirect(303, '/vacations');
+    });
+});
+
 var cartValidation = require('./lib/cartValidation.js');
 
 app.use(cartValidation.checkWaivers);
 app.use(cartValidation.checkGuestCounts);
 
+app.get('/cart/add', function(req, res, next){
+	var cart = req.session.cart || (req.session.cart = { items: [] });
+	Vacation.findOne({ sku: req.query.sku }, function(err, vacation){
+		if(err) return next(err);
+		if(!vacation) return next(new Error('Unknown vacation SKU: ' + req.query.sku));
+		cart.items.push({
+			vacation: vacation,
+			guests: req.body.guests || 1,
+		});
+		res.redirect(303, '/cart');
+	});
+});
 app.post('/cart/add', function(req, res, next){
 	var cart = req.session.cart || (req.session.cart = { items: [] });
 	Vacation.findOne({ sku: req.body.sku }, function(err, vacation){
@@ -355,7 +407,7 @@ app.post('/cart/add', function(req, res, next){
 		if(!vacation) return next(new Error('Unknown vacation SKU: ' + req.body.sku));
 		cart.items.push({
 			vacation: vacation,
-			guests: req.body.guests || 0,
+			guests: req.body.guests || 1,
 		});
 		res.redirect(303, '/cart');
 	});
@@ -397,6 +449,35 @@ app.post('/cart/checkout', function(req, res){
 	    }
     );
     res.render('cart-thank-you', { cart: cart });
+});
+
+app.get('/notify-me-when-in-season', function(req, res){
+    res.render('notify-me-when-in-season', { sku: req.query.sku });
+});
+
+app.post('/notify-me-when-in-season', function(req, res){
+    VacationInSeasonListener.update(
+        { email: req.body.email }, 
+        { $push: { skus: req.body.sku } },
+        { upsert: true },
+	    function(err){
+	        if(err) {
+	        	console.error(err.stack);
+	            req.session.flash = {
+	                type: 'danger',
+	                intro: 'Ooops!',
+	                message: 'There was an error processing your request.',
+	            };
+	            return res.redirect(303, '/vacations');
+	        }
+	        req.session.flash = {
+	            type: 'success',
+	            intro: 'Thank you!',
+	            message: 'You will be notified when this vacation is in season.',
+	        };
+	        return res.redirect(303, '/vacations');
+	    }
+	);
 });
 
 app.get('/epic-fail', function(req, res){
