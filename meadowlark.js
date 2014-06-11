@@ -49,16 +49,16 @@ app.use(function(req, res, next){
             try {
                 // attempt to use Express error route
                 next(err);
-            } catch(err){
+            } catch(error){
                 // if Express error route failed, try
                 // plain Node response
-                console.error('Express error mechanism failed.\n', err.stack);
+                console.error('Express error mechanism failed.\n', error.stack);
                 res.statusCode = 500;
                 res.setHeader('content-type', 'text/plain');
                 res.end('Server error.');
             }
-        } catch(err){
-            console.error('Unable to send 500 response.\n', err.stack);
+        } catch(error){
+            console.error('Unable to send 500 response.\n', error.stack);
         }
     });
 
@@ -177,7 +177,7 @@ function NewsletterSignup(){
 }
 NewsletterSignup.prototype.save = function(cb){
 	cb();
-}
+};
 
 // mocking product database
 function Product(){
@@ -267,7 +267,7 @@ app.post('/newsletter', function(req, res){
 				type: 'danger',
 				intro: 'Database error!',
 				message: 'There was a database error; please try again later.',
-			}
+			};
 			return res.redirect(303, '/newsletter/archive');
 		}
 		if(req.xhr) return res.json({ success: true });
@@ -325,7 +325,7 @@ app.post('/cart/add', function(req, res, next){
 		cart.items.push({
 			product: product,
 			guests: req.body.guests || 0,
-		})
+		});
 		res.redirect(303, '/cart');
 	});
 });
@@ -356,7 +356,7 @@ app.post('/cart/checkout', function(req, res){
 	cart.billing = {
 		name: name,
 		email: email,
-	}
+	};
     res.render('email/cart-thank-you', 
     	{ layout: null, cart: cart }, function(err,html){
 	        if( err ) console.log('error in email template');
