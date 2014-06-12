@@ -235,21 +235,23 @@ require('./routes.js')(app);
 
 var Attraction = require('./models/attraction.js');
 
-app.get('/api/attractions', function(req, res){
+var rest = require('connect-rest');
+app.use('/api', require('cors')());
+
+rest.get('/attractions', function(req, content, cb){
     Attraction.find({ approved: true }, function(err, attractions){
-        if(err) return res.send(500, 'Error occurred: database error.');
-        res.json(attractions.map(function(a){
+        if(err) return cb({ error: 'Internal error.' });
+        cb(null, attractions.map(function(a){
             return {
                 name: a.name,
-                id: a._id,
                 description: a.description,
-                location: a.location, 
-			}
-		}));
+                location: a.location,
+            };
+        }));
     });
 });
 
-app.post('/api/attraction', function(req, res){
+rest.post('/attraction', function(req, content, cb){
     var a = new Attraction({
         name: req.body.name,
         description: req.body.description,
@@ -262,23 +264,41 @@ app.post('/api/attraction', function(req, res){
         approved: false,
     });
     a.save(function(err, a){
-        if(err) return res.send(500, 'Error occurred: database error.');
-        res.json({ id: a._id });
+        if(err) return cb({ error: 'Unable to add attraction.' });
+        cb(null, { id: a._id });
     }); 
 });
 
-app.get('/api/attraction/:id', function(req,res){
+rest.get('/attraction/:id', function(req, content, cb){
     Attraction.findById(req.params.id, function(err, a){
-        if(err) return res.send(500, 'Error occurred: database error.');
-        res.json({
+        if(err) return cb({ error: 'Unable to retrieve attraction.' });
+        cb(null, { 
             name: a.name,
-            id: a._id,
             description: a.description,
             location: a.location,
         });
     });
 });
 
+// API configuration
+var apiOptions = {
+    context: '/api',
+    domain: require('domain').create(),
+};
+
+apiOptions.domain.on('error', function(err){
+    console.log('API domain error.\n', err.stack);
+    setTimeout(function(){
+        console.log('Server shutting down after API domain error.');
+        process.exit(1);
+    }, 5000);
+    server.close();
+    var worker = require('cluster').worker;
+    if(worker) worker.disconnect();
+});
+
+// link API into pipeline
+app.use(rest.rester(apiOptions));
 
 // add support for auto views
 var autoViews = {};
@@ -296,6 +316,7 @@ app.use(function(req,res,next){
     // no view found; pass on to 404 handler
     next();
 });
+
 
 // 404 catch-all handler (middleware)
 app.use(function(req, res, next){
