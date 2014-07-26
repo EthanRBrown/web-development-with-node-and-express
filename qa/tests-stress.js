@@ -7,7 +7,7 @@ suite('Stress tests', function(){
           var options = {
               url: 'http://localhost:3000',
               concurrency: 4,
-              maxRequests: 100
+              maxRequests: 10
           };
           loadtest.loadTest(options, function(err,result){
             expect(!err);
