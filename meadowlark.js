@@ -217,6 +217,15 @@ app.use(function(req, res, next){
  	next();
 });
 
+// middleware to handle logo image easter eggs
+var static = require('./lib/static.js').map;
+app.use(function(req, res, next){
+	var now = new Date();
+	res.locals.logoImage = now.getMonth()==11 && now.getDate()==19 ?
+	static('/img/logo_bud_clark.png') :
+	static('/img/logo.png');
+	next();
+});
 
 // create "admin" subdomain...this should appear
 // before all your other routes
