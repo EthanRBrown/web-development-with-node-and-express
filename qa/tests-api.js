@@ -14,18 +14,18 @@ suite('API tests', function(){
         email: 'test@meadowlarktravel.com',
     };
 
-    var base = 'http://localhost:3000';
+    var base = 'http://api.meadowlark:3000';
 
     test('should be able to add an attraction', function(done){
-        rest.post(base+'/api/attraction', {data:attraction}).on('success', function(data){
+        rest.post(base+'/attraction', {data:attraction}).on('success', function(data){
             assert.match(data.id, /\w/, 'id must be set');
             done();
         });
     });
 
     test('should be able to retrieve an attraction', function(done){
-        rest.post(base+'/api/attraction', {data:attraction}).on('success', function(data){
-            rest.get(base+'/api/attraction/'+data.id).on('success', function(data){
+        rest.post(base+'/attraction', {data:attraction}).on('success', function(data){
+            rest.get(base+'/attraction/'+data.id).on('success', function(data){
                 assert(data.name===attraction.name);
                 assert(data.description===attraction.description);
                 done();
