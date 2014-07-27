@@ -8,25 +8,25 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 	    <title>Meadowlark Travel</title>
 		{{#if showTests}}
-			<link rel="stylesheet" href="/vendor/mocha.css">
+			<link rel="stylesheet" href="{{static '/vendor/mocha.css'}}">
 		{{/if}}
 		{{{_sections.head}}}
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        <link rel="stylesheet" href="/vendor/bootstrap/css/bootstrap.min.css">
+		<link rel="stylesheet" href="{{static '/vendor/bootstrap/css/bootstrap.min.css'}}">
         <style>
             body {
                 padding-top: 50px;
                 padding-bottom: 20px;
             }
         </style>
-        <link rel="stylesheet" href="/vendor/bootstrap/css/bootstrap-theme.min.css">
+		<link rel="stylesheet" href="{{static '/vendor/bootstrap/css/bootstrap-theme.min.css'}}">
 		{{#each _bundles.css}}
 			<link rel="stylesheet" href="{{static .}}">
 		{{/each}}
 
-        <script src="/vendor/js/modernizr-2.6.2-respond-1.1.0.min.js"></script>
+		<script src="{{static '/vendor/js/modernizr-2.6.2-respond-1.1.0.min.js'}}"></script>
     </head>
     <body>
         <!--[if lt IE 7]>
@@ -71,7 +71,7 @@
 	    </div> <!-- /container -->        
 
         <script src="//code.jquery.com/jquery-2.1.1.min.js"></script>
-        <script>window.jQuery || document.write('<script src="/vendor/js/jquery-2.1.1.min.js"><\/script>')</script>
+		<script>window.jQuery || document.write('<script src="{{static '/vendor/js/jquery-2.1.1.min.js'}}"><\/script>')</script>
 		{{! since we've move jquery to the end of the body (instead of in head), we should really rename this bundle
 			to something other than "head", but i'm leaving it for consistency with the book. }}
 		{{#each _bundles.js.head}}
@@ -107,20 +107,20 @@
 
 		{{#if showTests}}
 			<div id="mocha"></div>
-			<script src="/vendor/mocha.js"></script>
-			<script src="/vendor/chai.js"></script>
+			<script src="{{static '/vendor/mocha.js'}}"></script>
+			<script src="{{static '/vendor/chai.js'}}"></script>
 			<script>
 				mocha.ui('tdd');
 				var assert = chai.assert;
 			</script>
-			<script src="/qa/tests-global.js"></script>
+			<script src="{{static '/qa/tests-global.js'}}"></script>
 			{{#if pageTestScript}}
 				<script src="{{pageTestScript}}"></script>
 			{{/if}}
 			<script>mocha.run();</script>
 		{{/if}}
 
-        <script src="/vendor/bootstrap/js/bootstrap.min.js"></script>
-        <script src="/js/main.js"></script>
+		<script src="{{static '/vendor/bootstrap/js/bootstrap.min.js'}}"></script>
+		<script src="{{static '/js/main.js'}}"></script>
     </body>
 </html>

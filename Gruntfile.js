@@ -9,6 +9,7 @@ module.exports = function(grunt){
 		'grunt-contrib-uglify',
 		'grunt-contrib-cssmin',
 		'grunt-hashres',
+		'grunt-lint-pattern',
 	].forEach(function(task){
 		grunt.loadNpmTasks(task);
 	});
@@ -75,9 +76,47 @@ module.exports = function(grunt){
 				]
 			},
 		},
+		lint_pattern: {
+			view_statics: {
+				options: {
+					rules: [
+						{
+							pattern: /<link [^>]*href=["'](?!\{\{|(https?:)?\/\/)/,
+							message: 'Un-mapped static resource found in <link>.'
+						},
+						{
+							pattern: /<script [^>]*src=["'](?!\{\{|(https?:)?\/\/)/,
+							message: 'Un-mapped static resource found in <script>.'
+						},
+						{
+							pattern: /<img [^>]*src=["'](?!\{\{|(https?:)?\/\/)/,
+							message: 'Un-mapped static resource found in <img>.'
+						},
+					]
+				},
+			files: {
+				src: [ 'views/**/*.handlebars' ]
+		   }
+		},
+		css_statics: {
+			options: {
+				rules: [
+					{
+						pattern: /url\(/,
+						message: 'Un-mapped static found in LESS property.'
+					},
+				]
+			},
+			files: {
+				src: [
+					'less/**/*.less'
+				]
+			}
+		}
+	 }
 	});	
 
 	// register tasks
-	grunt.registerTask('default', ['cafemocha','jshint','exec']);
+	grunt.registerTask('default', ['cafemocha','jshint','exec', 'lint_pattern']);
 	grunt.registerTask('static', ['less', 'cssmin', 'uglify', 'hashres']);
 };
