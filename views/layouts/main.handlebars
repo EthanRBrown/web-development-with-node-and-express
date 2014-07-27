@@ -22,7 +22,9 @@
             }
         </style>
         <link rel="stylesheet" href="/vendor/bootstrap/css/bootstrap-theme.min.css">
-		<link rel="stylesheet" href="{{static '/css/meadowlark.min.2a8883cf.css'}}">
+		{{#each _bundles.css}}
+			<link rel="stylesheet" href="{{static .}}">
+		{{/each}}
 
         <script src="/vendor/js/modernizr-2.6.2-respond-1.1.0.min.js"></script>
     </head>
@@ -70,7 +72,11 @@
 
         <script src="//code.jquery.com/jquery-2.1.1.min.js"></script>
         <script>window.jQuery || document.write('<script src="/vendor/js/jquery-2.1.1.min.js"><\/script>')</script>
-		<script src="{{static '/js.min/meadowlark.min.js'}}"></script>
+		{{! since we've move jquery to the end of the body (instead of in head), we should really rename this bundle
+			to something other than "head", but i'm leaving it for consistency with the book. }}
+		{{#each _bundles.js.head}}
+			<script src="{{static .}}"></script>
+		{{/each}}
 		<script>
 			var IMG_CART_EMPTY = '{{static '/img/shop/cart_empty.png'}}';
 			var IMG_CART_FULL = '{{static '/img/shop/cart_full.png'}}';

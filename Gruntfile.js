@@ -67,11 +67,11 @@ module.exports = function(grunt){
 			},
 			all: {
 				src: [
-					'public/js/meadowlark.min.js',
+					'public/js.min/meadowlark.min.js',
 					'public/css/meadowlark.min.css',
 				],
 				dest: [
-					'views/layouts/main.handlebars',
+					'config.js',
 				]
 			},
 		},

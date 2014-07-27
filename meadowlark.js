@@ -30,6 +30,10 @@ var handlebars = require('express3-handlebars').create({
 app.engine('handlebars', handlebars.engine);
 app.set('view engine', 'handlebars');
 
+// set up css/js bundling
+var bundler = require('connect-bundle')(require('./config.js'));
+app.use(bundler);
+
 app.set('port', process.env.PORT || 3000);
 
 // use domains for better error handling
