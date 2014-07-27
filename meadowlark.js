@@ -227,6 +227,13 @@ app.use(function(req, res, next){
 	next();
 });
 
+// middleware to provide cart data for header
+app.use(function(req, res, next) {
+	var cart = req.session.cart;
+	res.locals.cartItems = cart && cart.items ? cart.items.length : 0;
+	next();
+});
+
 // create "admin" subdomain...this should appear
 // before all your other routes
 var admin = express.Router();

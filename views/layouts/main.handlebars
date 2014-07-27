@@ -31,7 +31,24 @@
             <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
         <![endif]-->
 
-		<header><img src="{{logoImage}}" alt="Meadowlark Travel Logo"></header>
+		<header>
+			<div class="row">
+				<div class="col-sm-4">
+					<img src="{{logoImage}}" alt="Meadowlark Travel Logo">
+				</div>
+				<div class="col-sm-2 pull-right">
+					{{! The following represents a lot of code duplication, so we will probably want to
+						change this in the future }}
+					{{#if cartItems}}
+						<a href="/cart"><img class="cartIcon" src="{{static '/img/shop/cart_full.png'}}"
+							alt="Cart Empty"></a>
+					{{else}}
+						<a href="/cart"><img class="cartIcon" src="{{static '/img/shop/cart_empty.png'}}"
+							alt="Cart Contains {{cartItems}} Items"></a>
+					{{/if}}
+				</div>
+			</div>
+		</header>
 
 	    <div class="container">
 			{{#if flash}}
@@ -53,6 +70,32 @@
 
         <script src="//code.jquery.com/jquery-2.1.1.min.js"></script>
         <script>window.jQuery || document.write('<script src="/vendor/js/jquery-2.1.1.min.js"><\/script>')</script>
+		<script>
+			var IMG_CART_EMPTY = '{{static '/img/shop/cart_empty.png'}}';
+			var IMG_CART_FULL = '{{static '/img/shop/cart_full.png'}}';
+
+			// simple client-side cart implementation (mostly mocked for now)
+			var cart = (function() {
+				// normally we would get this from an AJAX call, or some similar method
+				var items = Array({{cartItems}});
+				return {
+					items: items,
+					isEmpty: function() {
+						return !items.length;
+					},
+					addItem: function(id) {
+						items.push(id);
+						$(document).trigger('meadowlark_cart_changed');
+					}
+				};
+			})();
+
+			// change cart icon when the cart has changed
+			$(document).on('meadowlark_cart_changed', function(){
+				$('header img.cartIcon').attr('src', cart.isEmpty() ?
+				IMG_CART_EMPTY : IMG_CART_FULL );
+			});
+		</script>
     	{{{_sections.jquery}}}
 
 		{{#if showTests}}
