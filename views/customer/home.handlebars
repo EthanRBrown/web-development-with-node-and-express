@@ -1,0 +1,15 @@
+<h1>Customer Info</h1>
+<h2><a href="mailto:{{email}}">{{name}} &lt;{{email}}&gt;</a></h2>
+
+<h3>Address:</h3>
+{{{fullAddress}}}
+
+<h3>Phone:</h3>
+{{phone}}
+
+<h3>Orders:</h3>
+<ul>
+{{#each orders}}
+	<li><a href="{{url}}">{{orderNumber}}: {{date}} &mdash; {{status}}</a></li>
+{{/each}}
+</ul>

@@ -1,4 +1,4 @@
-ustomer = require('../model/customer.js');
+var Customer = require('../models/customer.js');
 
 // convenience function for joining fields
 function smartJoin(arr, separator){
@@ -13,18 +13,10 @@ function smartJoin(arr, separator){
 var _ = require('underscore');
 
 // get a customer view model
-function getCustomerViewModel(customerId){
-	var customer = Customer.findById(customerId);
-	if(!customer) return { error: 'Unknown customer ID: ' + 
-		req.params.customerId };
-	var orders = customer.getOrders().map(function(order){
-		return {
-			orderNumber: order.orderNumber,
-			date: order.date,
-			status: order.status,
-			url: '/orders/' + order.orderNumber,
-		};
-	});
+// NOTE: readers of the book will notice that this function differs from the version
+// in the book.  Unfortunately, the version in the book is incorrect (Mongoose does not
+// oofer an asynchronous version of .findById).  My apologies to my readers.
+function getCustomerViewModel(customer, orders){
 	var vm = _.omit(customer, 'salesNotes');
 	return _.extend(vm, {
 		name: smartJoin([vm.firstName, vm.lastName]),
@@ -35,7 +27,7 @@ function getCustomerViewModel(customerId){
 				customer.state + ' ' + 
 				customer.zip,
 		], '<br>'),
-		orders: customer.getOrders().map(function(order){
+		orders: orders.map(function(order){
 			return {
 				orderNumber: order.orderNumber,
 				date: order.date,
