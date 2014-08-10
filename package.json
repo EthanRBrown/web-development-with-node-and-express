@@ -24,6 +24,7 @@
     "connect-rest": "^0.9.12",
     "cookie-parser": "^1.1.0",
     "cors": "^2.3.1",
+    "csurf": "^1.4.0",
     "express": "~4.4.2",
     "express-logger": "0.0.3",
     "express-session": "^1.2.1",

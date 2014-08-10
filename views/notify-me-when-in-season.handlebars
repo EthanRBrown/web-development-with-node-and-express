@@ -1,5 +1,6 @@
 <div class="formContainer">
     <form class="form-horizontal newsletterForm" role="form" action="/notify-me-when-in-season" method="POST">
+		<input type="hidden" name="_csrf" value="{{_csrfToken}}">
 	    <input type="hidden" name="sku" value="{{sku}}">
         <div class="form-group">
             <label for="fieldEmail" class="col-sm-2 control-label">Email</label>

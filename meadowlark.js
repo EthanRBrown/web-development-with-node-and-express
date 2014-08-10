@@ -102,6 +102,13 @@ app.use(require('express-session')({ store: sessionStore }));
 app.use(express.static(__dirname + '/public'));
 app.use(require('body-parser')());
 
+// cross-site request forgery protection
+app.use(require('csurf')());
+app.use(function(req, res, next){
+	res.locals._csrfToken = req.csrfToken();
+	next();
+});
+
 // database configuration
 var mongoose = require('mongoose');
 var options = {
