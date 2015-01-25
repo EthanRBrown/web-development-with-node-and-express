@@ -6,7 +6,8 @@ var http = require('http'),
 	fs = require('fs'),
 	vhost = require('vhost'),
 	Vacation = require('./models/vacation.js'),
-	VacationInSeasonListener = require('./models/vacationInSeasonListener.js');
+	VacationInSeasonListener = require('./models/vacationInSeasonListener.js'),
+    path = require('path');
 
 var app = express();
 
@@ -99,7 +100,7 @@ var sessionStore = new MongoSessionStore({ url: credentials.mongo.development.co
 
 app.use(require('cookie-parser')(credentials.cookieSecret));
 app.use(require('express-session')({ store: sessionStore }));
-app.use(express.static(__dirname + '/public'));
+app.use(express.static(path.join(__dirname, 'public')));
 app.use(require('body-parser')());
 
 // cross-site request forgery protection
