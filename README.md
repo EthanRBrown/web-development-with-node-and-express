@@ -6,7 +6,7 @@ This is the companion repository to [Web Development With Node and Express, 1st 
 
 I must humbly beg the forgiveness of my readers for the incomplete state of this repository.  Currently, the repo contains code up through Chapter 18.  I have learned a lot about how to synchronize a repository with a book.  Or -- more to the point -- how not to.
 
-When I started the book, I imagined the reader progressing throguh the book in a linear fashion.  A repo, I thought, should flow the same way: it might contain the sequence of commits a dedicated reader might make as she or he progresses through the book.
+When I started the book, I imagined the reader progressing through the book in a linear fashion.  A repo, I thought, should flow the same way: it might contain the sequence of commits a dedicated reader might make as she or he progresses through the book.
 
 A nice thought, but it has a fatal flaw: errata.  Despite my best efforts, mistakes have been found in the book (shocking, I know).  Dependencies change.  Things get deprecated.  In the book, I suggest you say `npm install <whatever>` not `npm install <whatever>@1.3.17`, for example.  Allowing the repository to be a linear history of the book has made it impossible to correct errata in the repo.
 
@@ -47,8 +47,8 @@ In this approach, each chapter would have its own branch (as opposed to tag, as 
 
 ## So..._When_?
 
-Here's the bad news...it won't be soon.  I have a manuscript deadline in September for my second book, and between that, work, and school, it is unlikely I will be able to undertake this kind of restructring.  Unless....
+Here's the bad news...it won't be soon.  I have a manuscript deadline in September for my second book, and between that, work, and school, it is unlikely I will be able to undertake this kind of restructuring.  Unless....
 
 ## Volunteers?
 
-If there are volunteers who are willing to help out with the restructring -- including re-creating the samples from the chapter _as they appear in the book_ (yes, I will provide you the latest revision).  In other words, you can't change the code because you think it's better.  It may very well be, but it has to match what's in the book.  Of course you are willing to raise the idea with me...I can always change it in the book if it's a great idea.
+If there are volunteers who are willing to help out with the restructuring -- including re-creating the samples from the chapter _as they appear in the book_ (yes, I will provide you the latest revision).  In other words, you can't change the code because you think it's better.  It may very well be, but it has to match what's in the book.  Of course you are willing to raise the idea with me...I can always change it in the book if it's a great idea.
