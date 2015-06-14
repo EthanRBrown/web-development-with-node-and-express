@@ -1,0 +1,26 @@
+<h1>Vacations</h1>
+{{#each vacations}}
+    <div class="vacation">
+        <h3><a href="/vacation/{{slug}}">{{name}}</a></h3>
+        <p>{{description}}</p>
+        {{#if inSeason}}
+            <span class="price">{{price}}</span> 
+            <a href="/cart/add?sku={{sku}}" class="btn btn-default">Buy Now!</a>
+        {{else}}
+            <span class="outOfSeason">We're sorry, this vacation is currently 
+            not in season.
+            {{! The "notify me when this vacation is in season" 
+                page will be our next task. }}
+            <a href="/notify-me-when-in-season?sku={{sku}}">Notify me when 
+            this vacation is in season.</a>
+        {{/if}}
+    </div>
+{{/each}}
+
+<hr>
+
+<p>Currency:
+    <a href="/set-currency/USD" class="currency {{currencyUSD}}">USD</a> |
+    <a href="/set-currency/GBP" class="currency {{currencyGBP}}">GBP</a> |
+    <a href="/set-currency/BTC" class="currency {{currencyBTC}}">BTC</a>
+</p>
