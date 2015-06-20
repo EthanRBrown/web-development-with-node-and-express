@@ -7,6 +7,7 @@ suite('Cross-Page Tests', function(){
 
 	setup(function(){
 		browser = new Browser();
+		browser.silent = true;	// disable console.log noise
 	});
 
 	test('requesting a group rate quote from the hood river tour page should ' +
