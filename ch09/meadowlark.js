@@ -123,7 +123,7 @@ function NewsletterSignup(){
 }
 NewsletterSignup.prototype.save = function(cb){
 	cb();
-}
+};
 
 var VALID_EMAIL_REGEX = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)+$/;
 
@@ -146,7 +146,7 @@ app.post('/newsletter', function(req, res){
 				type: 'danger',
 				intro: 'Database error!',
 				message: 'There was a database error; please try again later.',
-			}
+			};
 			return res.redirect(303, '/newsletter/archive');
 		}
 		if(req.xhr) return res.json({ success: true });
