@@ -117,7 +117,7 @@ function NewsletterSignup(){
 }
 NewsletterSignup.prototype.save = function(cb){
 	cb();
-}
+};
 
 // mocking product database
 function Product(){
@@ -207,7 +207,7 @@ app.post('/newsletter', function(req, res){
 				type: 'danger',
 				intro: 'Database error!',
 				message: 'There was a database error; please try again later.',
-			}
+			};
 			return res.redirect(303, '/newsletter/archive');
 		}
 		if(req.xhr) return res.json({ success: true });
@@ -265,7 +265,7 @@ app.post('/cart/add', function(req, res, next){
 		cart.push({
 			product: product,
 			guests: req.body.guests || 0,
-		})
+		});
 		res.redirect(303, '/cart');
 	});
 });
