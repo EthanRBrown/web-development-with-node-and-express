@@ -299,8 +299,8 @@ app.get('/contest/vacation-photo', function(req, res){
 // make sure data directory exists
 var dataDir = __dirname + '/data';
 var vacationPhotoDir = dataDir + '/vacation-photo';
-fs.existsSync(dataDir) || fs.mkdirSync(dataDir); 
-fs.existsSync(vacationPhotoDir) || fs.mkdirSync(vacationPhotoDir);
+if(!fs.existsSync(dataDir)) fs.mkdirSync(dataDir); 
+if(!fs.existsSync(vacationPhotoDir)) fs.mkdirSync(vacationPhotoDir);
 
 function saveContestEntry(contestName, email, year, month, photoPath){
     // TODO...this will come later
@@ -369,7 +369,7 @@ app.get('/vacations', function(req, res){
                     inSeason: vacation.inSeason,
                     price: convertFromUSD(vacation.priceInCents/100, currency),
                     qty: vacation.qty,
-                }
+                };
             })
         };
         switch(currency){
