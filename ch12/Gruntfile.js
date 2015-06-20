@@ -19,7 +19,7 @@ module.exports = function(grunt){
 			qa: ['Gruntfile.js', 'public/qa/**/*.js', 'qa/**/*.js'],
 		},
 		exec: {
-			linkchecker: { cmd: 'linkchecker http://localhost:3000' }
+			linkchecker: { cmd: 'linkchecker --ignore-url=\'!^(https?:)\/\/localhost\b\' http://localhost:3000' }
 		},
 	});	
 
