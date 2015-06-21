@@ -13,3 +13,6 @@ log
 
 # ignore uploaded data
 data
+
+# don't store SSL certs in repo!
+ssl
