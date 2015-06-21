@@ -33,6 +33,7 @@
                 $.ajax({
                     url: action,
                     type: 'POST',
+					data: $(this).serialize(),
                     success: function(data){
                         if(data.success){
                             $container.html('<h2>Thank you!</h2>');
