@@ -96,10 +96,16 @@ switch(app.get('env')){
 var MongoSessionStore = require('session-mongoose')(require('connect'));
 var sessionStore = new MongoSessionStore({ url: credentials.mongo.development.connectionString });
 
+app.use(require('body-parser')());
 app.use(require('cookie-parser')(credentials.cookieSecret));
 app.use(require('express-session')({ store: sessionStore }));
+app.use(require('csurf')());
+app.use(function(req, res, next) {
+	res.locals._csrfToken = req.csrfToken();
+	next();
+});
+
 app.use(express.static(__dirname + '/public'));
-app.use(require('body-parser')());
 
 // database configuration
 var mongoose = require('mongoose');

@@ -1,6 +1,7 @@
 <h1>Your Shopping Cart</h1>
 <p>Please provide your email address so we can send you a confirmation of your order.</p>
 <form class="form-horizontal newsletterForm" role="form" action="/cart/checkout" method="POST">
+	<input type="hidden" name="_csrf" value="{{_csrfToken}}">
     <div class="form-group">
         <label for="fieldName" class="col-sm-2 control-label">Name</label>
         <div class="col-sm-4">

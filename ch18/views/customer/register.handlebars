@@ -2,6 +2,7 @@
 
 <div class="formContainer">
     <form class="form-horizontal newsletterForm" role="form" action="/customer/register" method="POST">
+		<input type="hidden" name="_csrf" value="{{_csrfToken}}">
         <div class="form-group">
             <label for="fieldFirstName" class="col-sm-2 control-label">First name</label>
             <div class="col-sm-4">

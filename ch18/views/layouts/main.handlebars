@@ -36,7 +36,7 @@
 		<header>
 			<div class="row">
 				<div class="col-sm-4">
-					<img src="{{logoImage}}" alt="Meadowlark Travel Logo">
+					<img src="{{#if logoImage}}{{logoImage}}{{else}}/img/logo.png{{/if}}" alt="Meadowlark Travel Logo">
 				</div>
 				<div class="col-sm-2 pull-right">
 					{{! The following represents a lot of code duplication, so we will probably want to
