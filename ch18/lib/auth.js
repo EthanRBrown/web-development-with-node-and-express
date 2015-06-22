@@ -12,3 +12,21 @@ passport.deserializeUser(function(id, done){
 		done(null, user);
 	});
 });
+
+module.exports = function(app, options){
+
+	// if success and failure redirects aren't specified,
+	// set some reasonable defaults
+	if(!options.successRedirect)
+		options.successRedirect = '/account';
+	if(!options.failureRedirect)
+		options.failureRedirect = '/login';
+
+	return {
+
+		init: function() { /* TODO */ },
+
+		registerRoutes: function() { /* TODO */ },
+
+	};
+};
