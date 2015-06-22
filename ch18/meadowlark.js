@@ -330,6 +330,18 @@ apiOptions.domain.on('error', function(err){
 // currently commented out to reduce console noise
 //app.use(vhost('api.*', rest.rester(apiOptions)));
 
+// authentication
+var auth = require('./lib/auth.js')(app, {
+	providers: credentials.authProviders,
+	successRedirect: '/account',
+	failureRedirect: '/unauthorized',
+});
+// auth.init() links in Passport middleware:
+auth.init();
+
+// now we can specify our auth routes:
+auth.registerRoutes();
+
 // add support for auto views
 var autoViews = {};
 
