@@ -332,6 +332,7 @@ apiOptions.domain.on('error', function(err){
 
 // authentication
 var auth = require('./lib/auth.js')(app, {
+	baseUrl: process.env.BASE_URL,
 	providers: credentials.authProviders,
 	successRedirect: '/account',
 	failureRedirect: '/unauthorized',
@@ -341,6 +342,16 @@ auth.init();
 
 // now we can specify our auth routes:
 auth.registerRoutes();
+
+// user pages
+app.get('/unauthorized', function(req, res) {
+	res.status(403).render('unauthorized');
+});
+app.get('/account', function(req, res) {
+	if(!req.user)
+		return res.redirect(303, '/unauthorized');
+	res.render('account', { username: req.user.name });
+});
 
 // add support for auto views
 var autoViews = {};
