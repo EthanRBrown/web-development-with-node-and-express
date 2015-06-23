@@ -343,14 +343,38 @@ auth.init();
 // now we can specify our auth routes:
 auth.registerRoutes();
 
-// user pages
+// authorization helpers
+function customerOnly(req, res, next){
+	if(req.user && req.user.role==='customer') return next();
+	// we want customer-only pages to know they need to logon
+	res.redirect(303, '/unauthorized');
+}
+function employeeOnly(req, res, next){
+	if(req.user && req.user.role==='employee') return next();
+	// we want employee-only authorization failures to be "hidden", to
+	// prevent potential hackers from even knowhing that such a page exists
+	next('route');
+}
+
 app.get('/unauthorized', function(req, res) {
 	res.status(403).render('unauthorized');
 });
-app.get('/account', function(req, res) {
-	if(!req.user)
-		return res.redirect(303, '/unauthorized');
+
+// customer routes
+
+app.get('/account', customerOnly, function(req, res){
 	res.render('account', { username: req.user.name });
+});
+app.get('/account/order-history', customerOnly, function(req, res){
+	res.render('account/order-history');
+});
+app.get('/account/email-prefs', customerOnly, function(req, res){
+	res.render('account/email-prefs');
+});
+
+// employer routes
+app.get('/sales', employeeOnly, function(req, res){
+	res.render('sales');
 });
 
 // add support for auto views
