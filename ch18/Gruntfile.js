@@ -4,7 +4,6 @@ module.exports = function(grunt){
 	[
 		'grunt-cafe-mocha',
 		'grunt-contrib-jshint',
-		'grunt-exec',
 		'grunt-contrib-less',
 		'grunt-contrib-uglify',
 		'grunt-contrib-cssmin',
@@ -23,9 +22,6 @@ module.exports = function(grunt){
 			app: ['meadowlark.js', 'public/js/**/*.js', 'lib/**/*.js',
 				'models/**/*.js', 'viewModels/**/*.js', 'controllers/**/*.js'],
 			qa: ['Gruntfile.js', 'public/qa/**/*.js', 'qa/**/*.js'],
-		},
-		exec: {
-			linkchecker: { cmd: 'linkchecker --ignore-url=\'!^(https?:)\/\/localhost\b\' --ignore-url=/cart/add --no-warnings http://localhost:3000' }
 		},
 		less: {
 			development: {
@@ -118,6 +114,6 @@ module.exports = function(grunt){
 	});	
 
 	// register tasks
-	grunt.registerTask('default', ['cafemocha','jshint','exec', 'lint_pattern']);
+	grunt.registerTask('default', ['cafemocha', 'jshint', 'lint_pattern']);
 	grunt.registerTask('static', ['less', 'cssmin', 'uglify', 'hashres']);
 };
