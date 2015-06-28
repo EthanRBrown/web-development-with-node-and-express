@@ -89,7 +89,12 @@ var MongoSessionStore = require('session-mongoose')(require('connect'));
 var sessionStore = new MongoSessionStore({ url: credentials.mongo.development.connectionString });
 
 app.use(require('cookie-parser')(credentials.cookieSecret));
-app.use(require('express-session')({ store: sessionStore }));
+app.use(require('express-session')({
+    resave: false,
+    saveUninitialized: false,
+    secret: credentials.cookieSecret,
+	store: sessionStore,
+}));
 app.use(express.static(__dirname + '/public'));
 app.use(require('body-parser')());
 
