@@ -274,6 +274,26 @@ function geocodeDealer(dealer){
     });
 }
 
+// optimize performance of dealer display
+function dealersToGoogleMaps(dealers){
+    var js = 'function addMarkers(map){\n' +
+        'var markers = [];\n' +
+        'var Marker = google.maps.Marker;\n' +
+        'var LatLng = google.maps.LatLng;\n';
+    dealers.forEach(function(d){
+        var name = d.name.replace(/'/, '\\\'')
+            .replace(/\\/, '\\\\');
+        js += 'markers.push(new Marker({\n' +
+                '\tposition: new LatLng(' +
+                    d.lat + ', ' + d.lng + '),\n' +
+                '\tmap: map,\n' +
+                '\ttitle: \'' + name.replace(/'/, '\\') + '\',\n' +
+            '}));\n';
+    });
+    js += '}';
+    return js;
+}
+
 // dealer cache
 var dealerCache = {
     lastRefreshed: 0,
@@ -298,6 +318,8 @@ dealerCache.refresh = function(cb){
 
             // we now write all the dealers out to our cached JSON file
             fs.writeFileSync(dealerCache.jsonFile, JSON.stringify(dealers));
+
+			fs.writeFileSync(__dirname + '/public/js/dealers-googleMapMarkers.js', dealersToGoogleMaps(dealers));
 
             // all done -- invoke callback
             cb();

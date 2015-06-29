@@ -21,6 +21,7 @@
 </div>
 
 {{#section 'jquery'}}
+	<script src="/js/dealers-googleMapMarkers.js"></script>
 	<script>
 		var map;
 		var dealerTemplate = Handlebars.compile($('#dealerTemplate').html());
@@ -37,22 +38,13 @@
 				document.getElementById('map'),
 				mapOptions);
 
+			addMarkers(map);
+
 			// fetch JSON
 			$.getJSON('/dealers.json', function(dealers){
 
-				// add markers on map for each dealer
-				dealers.forEach(function(dealer){
-					// skip any dealers without geocoding
-					if(!dealer.lat || !dealer.lng) return;
-					var pos = new google.maps.LatLng(dealer.lat, dealer.lng);
-					var marker = new google.maps.Marker({
-						position: pos,
-						map: map,
-						title: dealer.name
-					});
-				});
-
-				// update dealer list using Handlebars
+				// update dealer list using Handlebars -- probably want to render this on the
+				// serverside as well, for performance
 				$('#dealerList').html(dealerTemplate({ dealers: dealers }));
 
 			});

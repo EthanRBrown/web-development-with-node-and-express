@@ -6,3 +6,4 @@ js.min
 
 # ignore dealers cache
 dealers.json
+js/dealers-googleMapMarkers.js
