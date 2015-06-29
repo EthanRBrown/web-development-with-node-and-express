@@ -243,6 +243,18 @@ Dealer.find({}, function(err, dealers){
 	}).save();
 });
 
+// dealer cache
+var dealerCache = {
+    lastRefreshed: 0,
+    refreshInterval: 60 * 60 * 1000,
+    jsonUrl: '/dealers.json',
+    geocodeLimit: 2000,
+    geocodeCount: 0,
+    geocodeBegin: 0,
+};
+dealerCache.jsonFile = __dirname +
+    '/public' + dealerCache.jsonUrl;
+
 // flash message middleware
 app.use(function(req, res, next){
 	// if there's a flash message, transfer
