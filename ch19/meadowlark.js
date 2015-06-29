@@ -279,6 +279,26 @@ var dealerCache = {
 };
 dealerCache.jsonFile = __dirname +
     '/public' + dealerCache.jsonUrl;
+dealerCache.refresh = function(cb){
+
+    if(Date.now() > dealerCache.lastRefreshed + dealerCache.refreshInterval){
+        // we need to refresh the cache
+        Dealer.find({ active: true }, function(err, dealers){
+            if(err) return console.log('Error fetching dealers: '+
+                 err);
+
+            // geocodeDealer will do nothing if coordinates are up-to-date
+            dealers.forEach(geocodeDealer);
+
+            // we now write all the dealers out to our cached JSON file
+            fs.writeFileSync(dealerCache.jsonFile, JSON.stringify(dealers));
+
+            // all done -- invoke callback
+            cb();
+        });
+    }
+
+};
 
 // flash message middleware
 app.use(function(req, res, next){
