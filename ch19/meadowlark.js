@@ -394,6 +394,36 @@ app.get('/sales', employeeOnly, function(req, res){
 	res.render('sales');
 });
 
+// twitter integration
+var topTweets = {
+	count: 10,
+	lastRefreshed: 0,
+	refreshInterval: 15 * 60 * 1000,
+	tweets: [],
+};
+function getTopTweets(cb){
+	if(Date.now() < topTweets.lastRefreshed + topTweets.refreshInterval)
+		return cb(topTweets.tweets);
+
+	twitter.search('#meadowlarktravel', topTweets.count, function(result){
+		var formattedTweets = [];
+		var promises = [];
+		var embedOpts = { omit_script: 1 };
+		result.statuses.forEach(function(status){
+			var deferred = Q.defer();
+			twitter.embed(status.id_str, embedOpts, function(embed){
+				formattedTweets.push(embed.html);
+				deferred.resolve();
+			});
+			promises.push(deferred.promise);
+		});
+		Q.all(promises).then(function(){
+			topTweets.lastRefreshed = Date.now();
+			cb(topTweets.tweets = formattedTweets);
+		});
+	});
+}
+
 // add support for auto views
 var autoViews = {};
 
