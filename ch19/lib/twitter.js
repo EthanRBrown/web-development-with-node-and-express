@@ -43,7 +43,28 @@ module.exports = function(twitterOptions){
 
 	return {
 		search: function(query, count, cb){
-			// TODO
-		}
+			getAccessToken(function(accessToken){
+				var options = {
+					hostname: 'api.twitter.com',
+					port: 443,
+					method: 'GET',
+					path: '/1.1/search/tweets.json?q=' + 
+						encodeURIComponent(query) +
+						'&count=' + (count || 10),
+					headers: {
+						'Authorization': 'Bearer ' + accessToken,
+					},
+				};
+				https.request(options, function(res){
+					var data = '';
+					res.on('data', function(chunk){
+						data += chunk;
+					});
+					res.on('end', function(){
+						cb(JSON.parse(data));
+					});
+				}).end();
+			});
+		},
 	};
 };
