@@ -11,6 +11,12 @@ var app = express();
 
 var credentials = require('./credentials.js');
 
+// twitter library
+var twitter = require('./lib/twitter')({
+	consumerKey: credentials.twitter.consumerKey,
+	consumerSecret: credentials.twitter.consumerSecret,
+});
+
 var emailService = require('./lib/email.js')(credentials);
 
 // set up handlebars view engine
