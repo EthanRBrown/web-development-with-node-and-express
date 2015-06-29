@@ -1,0 +1,26 @@
+<h1>Your Shopping Cart</h1>
+{{#each cart.errors}}
+	<div class="alert alert-danger">{{.}}</div>
+{{/each}}
+{{#each cart.warnings}}
+	<div class="alert alert-warning">{{.}}</div>
+{{/each}}
+
+<table class="table table-striped">
+	<thead>
+		<tr>
+			<td>Vacation</td>
+			<td>Guests</td>
+		</tr>
+	</thead>
+	<tbody>
+		{{#each cart.items}}
+			<tr>
+				<td>{{vacation.name}}</td>
+				<td>{{guests}}</td>
+			</tr>
+		{{/each}}
+	</tbody>
+</table>
+
+<a class="btn btn-primary" href="/cart/checkout">Checkout</a>

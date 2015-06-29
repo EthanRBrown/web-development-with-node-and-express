@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	    <title>Meadowlark Travel</title>
+		{{#if showTests}}
+			<link rel="stylesheet" href="{{static '/vendor/mocha.css'}}">
+		{{/if}}
+		{{{_sections.head}}}
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+		<link rel="stylesheet" href="{{static '/vendor/bootstrap/css/bootstrap.min.css'}}">
+        <style>
+            body {
+                padding-top: 50px;
+                padding-bottom: 20px;
+            }
+        </style>
+		<link rel="stylesheet" href="{{static '/vendor/bootstrap/css/bootstrap-theme.min.css'}}">
+		{{#each _bundles.css}}
+			<link rel="stylesheet" href="{{static .}}">
+		{{/each}}
+
+		<script src="{{static '/vendor/js/modernizr-2.6.2-respond-1.1.0.min.js'}}"></script>
+    </head>
+    <body>
+        <!--[if lt IE 7]>
+            <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+        <![endif]-->
+
+		<header>
+			<div class="row">
+				<div class="col-sm-4">
+					<img src="{{#if logoImage}}{{logoImage}}{{else}}/img/logo.png{{/if}}" alt="Meadowlark Travel Logo">
+				</div>
+				<div class="col-sm-2 pull-right">
+					{{! The following represents a lot of code duplication, so we will probably want to
+						change this in the future }}
+					{{#if cartItems}}
+						<a href="/cart"><img class="cartIcon" src="{{static '/img/shop/cart_full.png'}}"
+							alt="Cart Empty"></a>
+					{{else}}
+						<a href="/cart"><img class="cartIcon" src="{{static '/img/shop/cart_empty.png'}}"
+							alt="Cart Contains {{cartItems}} Items"></a>
+					{{/if}}
+				</div>
+			</div>
+		</header>
+
+	    <div class="container">
+			{{#if flash}}
+				<div class="alert alert-dismissible alert-{{flash.type}}">
+					<button type="button" class="close" 
+						data-dismiss="alert" aria-hidden="true">&times;</button>
+					<strong>{{flash.intro}}</strong> {{{flash.message}}}
+				</div>
+			{{/if}}
+
+		    {{{body}}}
+
+			<hr>
+
+			<footer>
+				<p>&copy; Meadowlark Travel 2014</p>
+			</footer>
+	    </div> <!-- /container -->        
+
+        <script src="//code.jquery.com/jquery-2.1.1.min.js"></script>
+		<script>window.jQuery || document.write('<script src="{{static '/vendor/js/jquery-2.1.1.min.js'}}"><\/script>')</script>
+		{{! since we've move jquery to the end of the body (instead of in head), we should really rename this bundle
+			to something other than "head", but i'm leaving it for consistency with the book. }}
+		{{#each _bundles.js.head}}
+			<script src="{{static .}}"></script>
+		{{/each}}
+		<script>
+			var IMG_CART_EMPTY = '{{static '/img/shop/cart_empty.png'}}';
+			var IMG_CART_FULL = '{{static '/img/shop/cart_full.png'}}';
+
+			// simple client-side cart implementation (mostly mocked for now)
+			var cart = (function() {
+				// normally we would get this from an AJAX call, or some similar method
+				var items = Array({{cartItems}});
+				return {
+					items: items,
+					isEmpty: function() {
+						return !items.length;
+					},
+					addItem: function(id) {
+						items.push(id);
+						$(document).trigger('meadowlark_cart_changed');
+					}
+				};
+			})();
+
+			// change cart icon when the cart has changed
+			$(document).on('meadowlark_cart_changed', function(){
+				$('header img.cartIcon').attr('src', cart.isEmpty() ?
+				IMG_CART_EMPTY : IMG_CART_FULL );
+			});
+		</script>
+    	{{{_sections.jquery}}}
+
+		{{#if showTests}}
+			<div id="mocha"></div>
+			<script src="{{static '/vendor/mocha.js'}}"></script>
+			<script src="{{static '/vendor/chai.js'}}"></script>
+			<script>
+				mocha.ui('tdd');
+				var assert = chai.assert;
+			</script>
+			<script src="{{static '/qa/tests-global.js'}}"></script>
+			{{#if pageTestScript}}
+				<script src="{{pageTestScript}}"></script>
+			{{/if}}
+			<script>mocha.run();</script>
+		{{/if}}
+
+		<script src="{{static '/vendor/bootstrap/js/bootstrap.min.js'}}"></script>
+		<script src="{{static '/js/main.js'}}"></script>
+    </body>
+</html>
