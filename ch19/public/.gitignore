@@ -3,3 +3,6 @@ css
 
 # ignore minified js
 js.min
+
+# ignore dealers cache
+dealers.json

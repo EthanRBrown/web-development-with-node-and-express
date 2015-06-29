@@ -200,6 +200,7 @@ Dealer.find({}, function(err, dealers){
 		zip: '97209',
 		country: 'US',
 		phone: '503-555-1212',
+		active: true,
 	}).save();
 
 	new Dealer({
@@ -210,6 +211,7 @@ Dealer.find({}, function(err, dealers){
 		zip: '97209',
 		country: 'US',
 		phone: '503-555-1212',
+		active: true,
 	}).save();
 
 	new Dealer({
@@ -220,6 +222,7 @@ Dealer.find({}, function(err, dealers){
 		zip: '97701',
 		country: 'US',
 		phone: '503-555-1212',
+		active: true,
 	}).save();
 
 	new Dealer({
@@ -230,6 +233,7 @@ Dealer.find({}, function(err, dealers){
 		zip: '97330',
 		country: 'US',
 		phone: '503-555-1212',
+		active: true,
 	}).save();
 
 	new Dealer({
@@ -240,6 +244,7 @@ Dealer.find({}, function(err, dealers){
 		zip: '97219',
 		country: 'US',
 		phone: '503-555-1212',
+		active: true,
 	}).save();
 });
 
@@ -260,6 +265,7 @@ function geocodeDealer(dealer){
         }
     }
 
+	var geocode = require('./lib/geocode.js');
     geocode(addr, function(err, coords){
         if(err) return console.log('Geocoding failure for ' + addr);
         dealer.lat = coords.lat;
@@ -299,6 +305,17 @@ dealerCache.refresh = function(cb){
     }
 
 };
+function refreshDealerCacheForever(){
+    dealerCache.refresh(function(){
+        // call self after refresh interval
+        setTimeout(refreshDealerCacheForever,
+            dealerCache.refreshInterval);
+    });
+}
+// create empty cache if it doesn't exist to prevent 404 errors
+if(!fs.existsSync(dealerCache.jsonFile)) fs.writeFileSync(JSON.stringify([]));
+// start refreshing cache
+refreshDealerCacheForever();
 
 // flash message middleware
 app.use(function(req, res, next){
