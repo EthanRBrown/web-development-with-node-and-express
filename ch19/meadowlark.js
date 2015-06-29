@@ -1,4 +1,5 @@
-var https = require('https'),
+var http = require('http'),
+	https = require('https'),
 	express = require('express'),
 	fortune = require('./lib/fortune.js'),
 	formidable = require('formidable'),
@@ -356,33 +357,53 @@ app.use(function(req, res, next){
 });
 
 // mocked weather data
-function getWeatherData(){
-    return {
+var getWeatherData = (function(){
+    // our weather cache
+    var c = {
+        refreshed: 0,
+        refreshing: false,
+        updateFrequency: 360000, // 1 hour
         locations: [
-            {
-                name: 'Portland',
-                forecastUrl: 'http://www.wunderground.com/US/OR/Portland.html',
-                iconUrl: 'http://icons-ak.wxug.com/i/c/k/cloudy.gif',
-                weather: 'Overcast',
-                temp: '54.1 F (12.3 C)',
-            },
-            {
-                name: 'Bend',
-                forecastUrl: 'http://www.wunderground.com/US/OR/Bend.html',
-                iconUrl: 'http://icons-ak.wxug.com/i/c/k/partlycloudy.gif',
-                weather: 'Partly Cloudy',
-                temp: '55.0 F (12.8 C)',
-            },
-            {
-                name: 'Manzanita',
-                forecastUrl: 'http://www.wunderground.com/US/OR/Manzanita.html',
-                iconUrl: 'http://icons-ak.wxug.com/i/c/k/rain.gif',
-                weather: 'Light Rain',
-                temp: '55.0 F (12.8 C)',
-            },
-        ],
+            { name: 'Portland' },
+            { name: 'Bend' },
+            { name: 'Manzanita' },
+        ]
     };
-}
+    return function() {
+        if( !c.refreshing && Date.now() > c.refreshed + c.updateFrequency ){
+            c.refreshing = true;
+            var promises = [];
+            c.locations.forEach(function(loc){
+                var deferred = Q.defer();
+                var url = 'http://api.wunderground.com/api/' +
+                    credentials.WeatherUnderground.ApiKey +
+                    '/conditions/q/OR/' + loc.name + '.json'
+                http.get(url, function(res){
+                    var body = '';
+                    res.on('data', function(chunk){
+                        body += chunk;
+                    });
+                    res.on('end', function(){
+                        body = JSON.parse(body);
+                        loc.forecastUrl = body.current_observation.forecast_url;
+                        loc.iconUrl = body.current_observation.icon_url;
+                        loc.weather = body.current_observation.weather;
+                        loc.temp = body.current_observation.temperature_string;
+                        deferred.resolve();
+                    });
+                });
+                promises.push(deferred);
+            });
+            Q.all(promises).then(function(){
+                c.refreshing = false;
+                c.refreshed = Date.now();
+            });
+        }
+        return { locations: c.locations };
+    }
+})();
+// initialize weather cache
+getWeatherData();
 
 // middleware to add weather data to context
 app.use(function(req, res, next){
