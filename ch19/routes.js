@@ -5,7 +5,8 @@ var main = require('./handlers/main.js'),
 	cartValidation = require('./lib/cartValidation.js');
 	contact = require('./handlers/contact.js'),
 	samples = require('./handlers/sample.js'),
-	customerController = require('./controllers/customer.js');
+	customerController = require('./controllers/customer.js'),
+	dealers = require('./handlers/dealers.js');
 
 module.exports = function(app){
 
@@ -49,6 +50,9 @@ module.exports = function(app){
 	app.get('/nursery-rhyme', samples.nurseryRhyme);
 	app.get('/data/nursery-rhyme', samples.nurseryRhymeData);
 	app.get('/epic-fail', samples.epicFail);
+
+	// dealers
+	app.get('/dealers', dealers.home);
 
 	// customer routes
 	customerController.registerRoutes(app);
