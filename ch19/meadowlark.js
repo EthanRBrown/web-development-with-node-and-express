@@ -377,7 +377,7 @@ var getWeatherData = (function(){
                 var deferred = Q.defer();
                 var url = 'http://api.wunderground.com/api/' +
                     credentials.WeatherUnderground.ApiKey +
-                    '/conditions/q/OR/' + loc.name + '.json'
+                    '/conditions/q/OR/' + loc.name + '.json';
                 http.get(url, function(res){
                     var body = '';
                     res.on('data', function(chunk){
@@ -400,7 +400,7 @@ var getWeatherData = (function(){
             });
         }
         return { locations: c.locations };
-    }
+    };
 })();
 // initialize weather cache
 getWeatherData();
