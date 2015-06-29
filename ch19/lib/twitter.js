@@ -66,5 +66,34 @@ module.exports = function(twitterOptions){
 				}).end();
 			});
 		},
+
+		embed: function(statusId, options, cb){
+			if(typeof options==='function') {
+				cb = options;
+				options = {};
+			}
+			options.id = statusId;
+			getAccessToken(function(accessToken){
+				var requestOptions = {
+					hostname: 'api.twitter.com',
+					port: 443,
+					method: 'GET',
+					path: '/1.1/statuses/oembed.json?' +
+						querystring.stringify(options),
+					headers: {
+						'Authorization': 'Bearer ' + accessToken,
+					},
+				};
+				https.request(requestOptions, function(res){
+					var data = '';
+					res.on('data', function(chunk){
+						data += chunk;
+					});
+					res.on('end', function(){
+						cb(JSON.parse(data));
+					});
+				}).end();
+			});
+		},
 	};
 };
