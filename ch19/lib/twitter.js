@@ -1,4 +1,5 @@
-var https = require('https');
+var https = require('https'),
+	querystring = require('querystring');
 
 module.exports = function(twitterOptions){
 
