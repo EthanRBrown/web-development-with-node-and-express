@@ -243,6 +243,31 @@ Dealer.find({}, function(err, dealers){
 	}).save();
 });
 
+// dealer geocoding
+function geocodeDealer(dealer){
+    var addr = dealer.getAddress(' ');
+    if(addr===dealer.geocodedAddress) return;   // already geocoded
+
+    if(dealerCache.geocodeCount >= dealerCache.geocodeLimit){
+        // has 24 hours passed since we last started geocoding?
+        if(Date.now() > dealerCache.geocodeCount + 24 * 60 * 60 * 1000){
+            dealerCache.geocodeBegin = Date.now();
+            dealerCache.geocodeCount = 0;
+        } else {
+            // we can't geocode this now: we've
+            // reached our usage limit
+            return;
+        }
+    }
+
+    geocode(addr, function(err, coords){
+        if(err) return console.log('Geocoding failure for ' + addr);
+        dealer.lat = coords.lat;
+        dealer.lng = coords.lng;
+        dealer.save();
+    });
+}
+
 // dealer cache
 var dealerCache = {
     lastRefreshed: 0,
