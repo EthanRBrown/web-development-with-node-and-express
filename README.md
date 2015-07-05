@@ -2,15 +2,15 @@
 
 This is the companion repository to [Web Development With Node and Express, 1st Edition](http://shop.oreilly.com/product/0636920032977.do).  With this repository, you can follow along with any of the code samples in the book, as well as see additional material that wasn't appropriate for the book format.
 
-## IMPORTANT: New Strucutre
+## IMPORTANT: New Structure
 
-The first version of the book attempted to treat the repo as a linear development effort.  That is, it attempted to mirror the progress a reader might make as he or she went through the book...or the progress a real development effort might take.  This approach was well-intentioned, but turned out to cause more problems than it solved.  After strugglign with those problems, I realized that compromises had to be made to reflelt the reality of this repo (including the amount of time I have to maintain this repo).  Instead of a linear commit history with tags for each chapter, each chapter now lives in its own directory (including an "alternate ending" chapter, `ch-08-jquery-file-upload`).  Tags now represent "versions".  The nice thing about versions is that the version of the book you're reading can be correlated to the version of the repository.  For example, if your book says to use version 1.5, you can checkout tag 1.5, and feel confident that the code will mirror what you're reading.
+The first version of the book attempted to treat the repo as a linear development effort.  That is, it attempted to mirror the progress a reader might make as he or she went through the book...or the progress a real development effort might take.  This approach was well-intentioned, but turned out to cause more problems than it solved.  After strugglign with those problems, I realized that compromises had to be made to reflect the reality of this repo (including the amount of time I have to maintain this repo).  Instead of a linear commit history with tags for each chapter, each chapter now lives in its own directory (including an "alternate ending" chapter, `ch-08-jquery-file-upload`).  Tags now represent "versions".  The nice thing about versions is that the version of the book you're reading can be correlated to the version of the repository.  For example, if your book says to use version 1.5, you can checkout tag 1.5, and feel confident that the code will mirror what you're reading.
 
 Benefits of this approach:
 
 * Code samples match what's in the book (see "If You're Following Along by Using the Official Repository" in Chapter 4 for the version number).
 * Reduced maintenance for me.  This is good for you because it allows me to focus on making meaningful updates to the book.
-* Easier to accept community contributions.  This makes it a lot easier for me to accept community contributions.  I can see quickly and easily what chapter(s) you're correcting, and correct the book in parrallel.
+* Easier to accept community contributions.  This makes it a lot easier for me to accept community contributions.  I can see quickly and easily what chapter(s) you're correcting, and correct the book in parallel.
 
 ## Contributing
 
