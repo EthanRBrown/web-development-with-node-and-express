@@ -87,7 +87,7 @@ switch(app.get('env')){
 }
 
 var MongoSessionStore = require('session-mongoose')(require('connect'));
-var sessionStore = new MongoSessionStore({ url: credentials.mongo.development.connectionString });
+var sessionStore = new MongoSessionStore({ url: credentials.mongo[app.get('env'].connectionString });
 
 app.use(require('cookie-parser')(credentials.cookieSecret));
 app.use(require('express-session')({
