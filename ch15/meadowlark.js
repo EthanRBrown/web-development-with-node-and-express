@@ -215,7 +215,7 @@ function getWeatherData(){
 // middleware to add weather data to context
 app.use(function(req, res, next){
 	if(!res.locals.partials) res.locals.partials = {};
- 	res.locals.partials.weather = getWeatherData();
+ 	res.locals.partials.weatherContext = getWeatherData();
  	next();
 });
 
