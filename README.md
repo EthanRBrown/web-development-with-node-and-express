@@ -12,6 +12,12 @@ Benefits of this approach:
 * Reduced maintenance for me.  This is good for you because it allows me to focus on making meaningful updates to the book.
 * Easier to accept community contributions.  This makes it a lot easier for me to accept community contributions.  I can see quickly and easily what chapter(s) you're correcting, and correct the book in parallel.
 
+## Code in the book not working?
+
+After checking for typos, try the following steps:
+* Select the folder that corresponds to the book chapter (e.g. Chapter 5) and compare your package.json to the one in this repo.  To rule out problems related to package versions try reinstalling the packages to match the specific version specified in the most current package.json.  To do so, run `npm install` with the specific package version (e.g. `npm install --save express-handlebars@0.5.0`).
+* Still within the chapter folder, click on the text `latest commit` on the right side of the window to see the newest changes to the code in this chapter => a red background means that the code was deleted and you should delete it too.  A green background means that this is new code that was added and, likewise, you should add it. To reiterate the previous section: beyond the specific version tag that matches your copy of the book (1.5.1, for example) you may see code changes that don't match.  
+
 ## Contributing
 
 I am happy to accept PRs for this repository, for changes big and small.  Please keep in mind, however, that changes to the repository have to be kept in sync with changes in the book.  Any work you can do in your PR to make it clear to me what changes need to be made in the book is very helpful to me.  Before sending a PR, please consider the following:
