@@ -16,14 +16,13 @@ exports.middleware = function(req, res, next){
 			};
 		})
 	};
-	var promises = [];
-	req.cart.items.forEach(function(item){
-		var d = Q.defer();
-		promises.push(d.promise);
-		Vacation.findOne({ sku: item.sku }, function(err, vacation){
-			if(err) return d.reject(err);
-			item.vacation = vacation;
-			d.resolve();
+	var promises = req.cart.items.map(function(item){
+		return Q.Promise(function(resolve, reject){
+			Vacation.findOne({ sku: item.sku }, function(err, vacation){
+				if(err) return reject(err);
+				item.vacation = vacation;
+				resolve();
+			});
 		});
 	});
 	Q.all(promises)
