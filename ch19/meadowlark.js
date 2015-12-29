@@ -420,8 +420,11 @@ var topTweets = {
 	tweets: [],
 };
 function getTopTweets(cb){
-	if(Date.now() < topTweets.lastRefreshed + topTweets.refreshInterval)
-		return cb(topTweets.tweets);
+	if(Date.now() < topTweets.lastRefreshed + topTweets.refreshInterval) {
+		return setImmediate(function() {
+            cb(topTweets.tweets);
+        });
+    }
 
 	twitter.search('#travel', topTweets.count, function(result){
 		var formattedTweets = [];
