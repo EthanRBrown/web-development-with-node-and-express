@@ -14,7 +14,7 @@ module.exports = {
 		if(!cart) return next();
 		if(cart.some(function(item){ return item.guests > item.product.maximumGuests; })){
 			if(!cart.errors) cart.errors = [];
-			cart.errors.push('One or more of your selected tours cannot accmodate the ' +
+			cart.errors.push('One or more of your selected tours cannot accommodate the ' +
 				'number of guests you have selected.');
 		}
 		next();
