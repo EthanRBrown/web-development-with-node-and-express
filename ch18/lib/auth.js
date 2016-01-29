@@ -1,6 +1,6 @@
 var User = require('../models/user.js'),
 	passport = require('passport'),
-	FacebookStrategy = require('passport-facebook').Strategy;
+	FacebookStrategy = require('passport-facebook').Strategy,
 	GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
 
 passport.serializeUser(function(user, done){
