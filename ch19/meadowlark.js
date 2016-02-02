@@ -23,7 +23,7 @@ var twitter = require('./lib/twitter')({
 var emailService = require('./lib/email.js')(credentials);
 
 // set up handlebars view engine
-var handlebars = require('express3-handlebars').create({
+var handlebars = require('express-handlebars').create({
     defaultLayout:'main',
     helpers: {
         section: function(name, options){
