@@ -20,9 +20,8 @@ function saveContestEntry(contestName, email, year, month, photoPath){
 exports.vacationPhotoProcessPost = function(req, res){
     var form = new formidable.IncomingForm();
     form.parse(req, function(err, fields, files){
-        if(err) return res.redirect(303, '/error');
         if(err) {
-            res.session.flash = {
+            req.session.flash = {
                 type: 'danger',
                 intro: 'Oops!',
                 message: 'There was an error processing your submission. ' +
