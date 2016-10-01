@@ -116,7 +116,7 @@ app.use(express.static(__dirname + '/public'));
 var mongoose = require('mongoose');
 var options = {
     server: {
-       socketOptions: { keepAlive: 1 } 
+       socketOptions: { keepAlive: 1 }
     }
 };
 switch(app.get('env')){
@@ -139,7 +139,7 @@ Vacation.find(function(err, vacations){
         slug: 'hood-river-day-trip',
         category: 'Day Trip',
         sku: 'HR199',
-        description: 'Spend a day sailing on the Columbia and ' + 
+        description: 'Spend a day sailing on the Columbia and ' +
             'enjoying craft beers in Hood River!',
         priceInCents: 9995,
         tags: ['day trip', 'hood river', 'sailing', 'windsurfing', 'breweries'],
@@ -191,7 +191,7 @@ app.use(function(req, res, next){
 
 // set 'showTests' context property if the querystring contains test=1
 app.use(function(req, res, next){
-	res.locals.showTests = app.get('env') !== 'production' && 
+	res.locals.showTests = app.get('env') !== 'production' &&
 		req.query.test === '1';
 	next();
 });
@@ -270,7 +270,13 @@ require('./routes.js')(app);
 
 var Attraction = require('./models/attraction.js');
 
-var rest = require('connect-rest');
+// API configuration
+var apiOptions = {
+    context: ''
+};
+
+var Rest = require('connect-rest')
+let rest = Rest.create( apiOptions )
 
 rest.get('/attractions', function(req, content, cb){
     Attraction.find({ approved: true }, function(err, attractions){
@@ -300,13 +306,13 @@ rest.post('/attraction', function(req, content, cb){
     a.save(function(err, a){
         if(err) return cb({ error: 'Unable to add attraction.' });
         cb(null, { id: a._id });
-    }); 
+    });
 });
 
 rest.get('/attraction/:id', function(req, content, cb){
     Attraction.findById(req.params.id, function(err, a){
         if(err) return cb({ error: 'Unable to retrieve attraction.' });
-        cb(null, { 
+        cb(null, {
             name: a.name,
             description: a.description,
             location: a.location,
@@ -314,26 +320,9 @@ rest.get('/attraction/:id', function(req, content, cb){
     });
 });
 
-// API configuration
-var apiOptions = {
-    context: '/',
-    domain: require('domain').create(),
-};
-
-apiOptions.domain.on('error', function(err){
-    console.log('API domain error.\n', err.stack);
-    setTimeout(function(){
-        console.log('Server shutting down after API domain error.');
-        process.exit(1);
-    }, 5000);
-    server.close();
-    var worker = require('cluster').worker;
-    if(worker) worker.disconnect();
-});
-
 // link API into pipeline
 // currently commented out to reduce console noise
-//app.use(vhost('api.*', rest.rester(apiOptions)));
+// app.use(vhost('api.*', rest.processRequest()) )
 
 // authentication
 var auth = require('./lib/auth.js')(app, {
@@ -392,7 +381,7 @@ app.get('/sales', employeeOnly, function(req, res){
 var autoViews = {};
 
 app.use(function(req,res,next){
-    var path = req.path.toLowerCase();  
+    var path = req.path.toLowerCase();
     // check cache; if it's there, render the view
     if(autoViews[path]) return res.render(autoViews[path]);
     // if it's not in the cache, see if there's
