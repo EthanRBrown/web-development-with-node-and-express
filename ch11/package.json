@@ -23,7 +23,7 @@
     "cookie-parser": "^1.1.0",
     "express": "~4.4.2",
     "express-session": "^1.2.1",
-    "express3-handlebars": "~0.5.0",
+    "express-handlebars": "~0.5.0",
     "nodemailer": "~0.6.5"
   },
   "devDependencies": {
