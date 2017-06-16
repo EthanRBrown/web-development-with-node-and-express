@@ -105,7 +105,7 @@ module.exports = function(app, options){
 					// we only get here on successful authentication
 					var redirect = req.session.authRedirect;
 					if(redirect) delete req.session.authRedirect;
-					res.redirect(303, req.query.redirect || options.successRedirect);
+					res.redirect(303, redirect || options.successRedirect);
 				}
 			);
 		},
