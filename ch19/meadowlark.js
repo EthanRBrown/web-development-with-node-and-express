@@ -256,7 +256,7 @@ function geocodeDealer(dealer){
 
     if(dealerCache.geocodeCount >= dealerCache.geocodeLimit){
         // has 24 hours passed since we last started geocoding?
-        if(Date.now() > dealerCache.geocodeCount + 24 * 60 * 60 * 1000){
+        if(Date.now() > dealerCache.geocodeBegin + 24 * 60 * 60 * 1000){
             dealerCache.geocodeBegin = Date.now();
             dealerCache.geocodeCount = 0;
         } else {
