@@ -271,6 +271,7 @@ function geocodeDealer(dealer){
         if(err) return console.log('Geocoding failure for ' + addr);
         dealer.lat = coords.lat;
         dealer.lng = coords.lng;
+	dealer.geocodedAddress = addr;
         dealer.save();
     });
 }
@@ -321,6 +322,8 @@ dealerCache.refresh = function(cb){
             fs.writeFileSync(dealerCache.jsonFile, JSON.stringify(dealers));
 
 			fs.writeFileSync(__dirname + '/public/js/dealers-googleMapMarkers.js', dealersToGoogleMaps(dealers));
+		
+	    dealerCache.lastRefreshed = Date.now();
 
             // all done -- invoke callback
             cb();
