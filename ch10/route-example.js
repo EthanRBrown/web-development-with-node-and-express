@@ -1,7 +1,7 @@
 var app = require('express')();
 
 app.use(function(req, res, next){ 
-	console.log('\n\nALLWAYS');
+	console.log('\n\nALWAYS');
 	next(); 
 });
 
