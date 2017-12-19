@@ -1,7 +1,7 @@
 var app = require('express')();
 
 app.use(function(req, res, next){ 
-	console.log('\n\nALLWAYS');
+	console.log('\n\nALWAYS');
 	next(); 
 });
 
@@ -33,7 +33,7 @@ app.get('/c', function(err, req){
 	throw new Error('c failed');
 });
 app.use('/c', function(err, req, res, next){
-	console.log('/c: error deteccted but not passed on');
+	console.log('/c: error detected but not passed on');
 	next();
 });
 
