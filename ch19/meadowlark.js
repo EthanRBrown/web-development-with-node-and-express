@@ -356,59 +356,72 @@ app.use(function(req, res, next){
 	next();
 });
 
-// mocked weather data
-var getWeatherData = (function(){
-    // our weather cache
-    var c = {
-        refreshed: 0,
-        refreshing: false,
-        updateFrequency: 360000, // 1 hour
-        locations: [
-            { name: 'Portland' },
-            { name: 'Bend' },
-            { name: 'Manzanita' },
-        ]
-    };
-    return function() {
-        if( !c.refreshing && Date.now() > c.refreshed + c.updateFrequency ){
-            c.refreshing = true;
-            var promises = c.locations.map(function(loc){
-                return Q.Promise(function(resolve){
-                    var url = 'http://api.wunderground.com/api/' +
-                        credentials.WeatherUnderground.ApiKey +
-                        '/conditions/q/OR/' + loc.name + '.json';
-                    http.get(url, function(res){
-                        var body = '';
-                        res.on('data', function(chunk){
-                            body += chunk;
-                        });
-                        res.on('end', function(){
-                            body = JSON.parse(body);
-                            loc.forecastUrl = body.current_observation.forecast_url;
-                            loc.iconUrl = body.current_observation.icon_url;
-                            loc.weather = body.current_observation.weather;
-                            loc.temp = body.current_observation.temperature_string;
-                            resolve();
-                        });
-                    });
-                });
-            });
-            Q.all(promises).then(function(){
-                c.refreshing = false;
-                c.refreshed = Date.now();
-            });
-        }
-        return { locations: c.locations };
-    };
+var getWeatherData = (function() {
+  // our weather cache
+  var c = {
+    refreshed: 0,
+    refreshing: false,
+    updateFrequency: 300000, // Runs every 5 minutes
+    locations: [{ id: "5746545" }, { id: "5713587" }, { id: "5720727" }] // Portland, Bend, Corvallis
+  };
+
+  /* Note: */
+  // City location IDs can be obtained by calling api.openweathermap.org/data/2.5/weather?q={city name},{country code}
+  // Example: api.openweathermap.org/data/2.5/weather?q=London,UK
+  // Response: { "list": [{ "id": 2643743, ... }] }
+
+  return function() {
+    if (!c.refreshing && Date.now() > c.refreshed + c.updateFrequency) {
+      c.refreshing = true;
+      var promises = c.locations.map(function(loc) {
+        return Q.Promise(function(resolve) {
+          var options = {
+            hostname: "api.openweathermap.org",
+            port: 443,
+            method: "GET",
+            path:
+              "/data/2.5/weather?appid=" + credentials.openWeatherMap.ApiKey +
+              "&id=" + loc.id +
+              "&units=metric"
+          };
+
+          https
+            .request(options, function(res) {
+              var data = "";
+              res.on("data", function(chunk) {
+                data += chunk;
+              });
+              res.on("end", function() {
+                data = JSON.parse(data);
+                loc.name = data.name;
+                loc.weather = data.weather;
+                loc.main = data.main;
+                loc.wind = data.wind;
+                loc.clouds = data.clouds;
+                loc.main.temp = loc.main.temp.toFixed(0); // Round the number
+                loc.weather.splice(1); // We only need to render the first weather item
+                resolve();
+              });
+            })
+            .end();
+        });
+      });
+      Q.all(promises).then(function() {
+        c.refreshing = false;
+        c.refreshed = Date.now();
+      });
+    }
+    return { locations: c.locations };
+  };
 })();
 // initialize weather cache
 getWeatherData();
 
 // middleware to add weather data to context
 app.use(function(req, res, next){
-	if(!res.locals.partials) res.locals.partials = {};
- 	res.locals.partials.weatherContext = getWeatherData();
- 	next();
+    if (!res.locals.partials) res.locals.partials = {};
+    res.locals.partials.weatherContext = getWeatherData();
+    next();
 });
 
 // twitter integration

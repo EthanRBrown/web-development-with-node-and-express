@@ -2,10 +2,15 @@
 	{{#each partials.weatherContext.locations}}
 		<div class="location">
 			<h3>{{name}}</h3>
-			<a href="{{forecastUrl}}">
-				<img src="{{iconUrl}}" alt="{{weather}}"> {{weather}}, {{temp}}
-			</a>
-		</div>
-	{{/each}}
-	<small>Source: <a href="http://www.wunderground.com">Weather Underground</a></small>
+			{{#weather}}
+				<a style="text-decoration: none;" target="_blank" href="https://openweathermap.org/city/{{../id}}"><img src="https://openweathermap.org/themes/openweathermap/assets/vendor/owm/img/widgets/{{icon}}.png" alt="{{description}}" title="{{description}}" />
+				</a>
+				<span>{{main}}</span>
+			{{/weather}}
+			{{#main}}
+				<p><span class="badge badge-info">{{temp}}&deg;С</span> wind {{../wind.speed}} m/s. clouds {{../clouds.all}} %, {{pressure}} hpa</p>
+			{{/main}}
+  		</div>
+  {{/each}}
+  <small>Source: <a target="_blank" href="https://openweathermap.org">OpenWeatherMap</a></small>
 </div>
