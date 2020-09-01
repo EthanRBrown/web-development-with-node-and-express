@@ -31,7 +31,7 @@
     "formidable": "~1.0.14",
     "grunt-contrib-less": "^0.11.1",
     "loadtest": "~0.2.11",
-    "mongoose": "3.8",
+    "mongoose": "5.10",
     "morgan": "~1.1.1",
     "nodemailer": "~0.6.5",
     "q": "^1.0.1",
